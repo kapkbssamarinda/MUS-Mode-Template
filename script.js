@@ -82,6 +82,8 @@ async function processAuditWorkpaper() {
                 if(col.style) newCol.style = col.style;
             });
 
+            newSheet.getColumn(4).width = 60;
+
             // B. Copy Header Template (Baris 1-12)
             copyRows(masterSheet, newSheet, 1, HEADER_ROWS, 1, sheetName);
 
