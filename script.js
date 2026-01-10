@@ -36,6 +36,7 @@ async function processAuditWorkpaper() {
     const period = document.getElementById('period').value || "";
     const preparedBy = document.getElementById('preparedBy').value || "";
     
+    
     // Format Tanggal (YYYY-MM-DD ke DD/MM/YYYY)
     const formatDate = (dateStr) => {
         if(!dateStr) return "";
