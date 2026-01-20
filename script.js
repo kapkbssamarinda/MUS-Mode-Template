@@ -182,21 +182,21 @@ async function processAuditWorkpaper() {
                 currentRowIdx++;
             });
 
-            // E. Footer Total
-            const totalRow = newSheet.getRow(currentRowIdx);
-            const totalLabel = totalRow.getCell(4);
-            totalLabel.value = "TOTAL SAMPEL";
-            totalLabel.font = { bold: true };
-            totalLabel.alignment = { horizontal: 'right' };
-            totalLabel.border = { top: {style:'thin'}, bottom: {style:'double'} };
+            // // E. Footer Total
+            // const totalRow = newSheet.getRow(currentRowIdx);
+            // const totalLabel = totalRow.getCell(4);
+            // totalLabel.value = "TOTAL SAMPEL";
+            // totalLabel.font = { bold: true };
+            // totalLabel.alignment = { horizontal: 'right' };
+            // totalLabel.border = { top: {style:'thin'}, bottom: {style:'double'} };
 
-            const totalVal = totalRow.getCell(5);
-            const startSum = START_DATA_ROW;
-            const endSum = currentRowIdx - 1;
-            totalVal.value = { formula: `SUM(E${startSum}:E${endSum})` };
-            totalVal.font = { bold: true };
-            totalVal.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
-            totalVal.border = { top: {style:'thin'}, bottom: {style:'double'} };
+            // const totalVal = totalRow.getCell(5);
+            // const startSum = START_DATA_ROW;
+            // const endSum = currentRowIdx - 1;
+            // totalVal.value = { formula: `SUM(E${startSum}:E${endSum})` };
+            // totalVal.font = { bold: true };
+            // totalVal.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
+            // totalVal.border = { top: {style:'thin'}, bottom: {style:'double'} };
 
             // F. Footer Keterangan
             const footerDestRow = currentRowIdx + FOOTER_GAP + 1; 
