@@ -23,6 +23,19 @@ function handleFiles(files) {
     }
 }
 
+// --- FUNGSI HELPER MATERIALITAS ---
+// Fungsi ini memanggil input materialitas dari HTML dan mengubahnya menjadi angka murni (Integer)
+function getNilaiMaterialitas() {
+    const inputElement = document.getElementById('materialitas');
+    if (!inputElement) return 0; // Jika input tidak ditemukan (fallback aman)
+    
+    // Hapus semua titik untuk mendapatkan angka murni
+    const val = inputElement.value;
+    const angkaMurni = val.replace(/\./g, '');
+    
+    return parseInt(angkaMurni, 10) || 0;
+}
+
 // --- LOGIKA UTAMA ---
 async function processAuditWorkpaper() {
     // 1. Validasi Input File
@@ -36,6 +49,8 @@ async function processAuditWorkpaper() {
     const period = document.getElementById('period').value || "";
     const preparedBy = document.getElementById('preparedBy').value || "";
     
+    // Ambil Batas Materialitas
+    const batasMaterialitas = getNilaiMaterialitas();
     
     // Format Tanggal (YYYY-MM-DD ke DD/MM/YYYY)
     const formatDate = (dateStr) => {
@@ -94,11 +109,11 @@ async function processAuditWorkpaper() {
             newSheet.getCell('B7').value = clientName;
             newSheet.getCell('B8').value = period;
 
-            // Dibuat Oleh: U7 (Kolom 21), Tanggal: U8
+            // Dibuat Oleh: V7, Tanggal: V8
             newSheet.getCell('V7').value = preparedBy;
             newSheet.getCell('V8').value = preparedDate;
 
-            // Direview Oleh: X7 (Kolom 24), Tanggal: X8
+            // Direview Oleh: Y7, Tanggal: Y8
             newSheet.getCell('Y7').value = reviewedBy;
             newSheet.getCell('Y8').value = reviewedDate;
 
@@ -108,13 +123,14 @@ async function processAuditWorkpaper() {
             });
 
 
-            // C. Sampling Logic
+            // C. Sampling Logic (DENGAN MATERIALITAS)
             let dataRaw = [];
             inputSheet.eachRow((row, rowNum) => {
                 if (rowNum > 1) { 
                     let nominal = row.getCell(4).value;
                     if (typeof nominal !== 'number') nominal = parseFloat(nominal) || 0;
                     dataRaw.push({
+                        idBaris: rowNum, // Menyimpan ID baris untuk validasi unik (opsional tapi aman)
                         tgl: row.getCell(1).value || '',
                         voucher: row.getCell(2).value || '',
                         ket: row.getCell(3).value || '',
@@ -123,18 +139,33 @@ async function processAuditWorkpaper() {
                 }
             });
 
+            // 1. Sortir nilai terbesar ke terkecil berdasarkan absolut (opsional, tapi disarankan nilai absolut jika ada minus)
+            // Namun saya ikuti logika asli Anda (b-a)
             dataRaw.sort((a, b) => b.nominal - a.nominal);
+            
+            // 2. Ambil Top 15
             const top15 = dataRaw.slice(0, 15);
             
+            // 3. Pisahkan sisa data
             let sisaData = dataRaw.slice(15);
+            
+            // 4. FILTER MATERIALITAS PADA SISA DATA
+            // Hanya ambil transaksi yang nilai absolutnya >= batas materialitas
+            let sisaDataEligible = sisaData.filter(item => Math.abs(item.nominal) >= batasMaterialitas);
+            
+            // 5. Random Sisa Data yang Eligible
             let random15 = [];
-            if (sisaData.length > 0) {
-                for (let i = sisaData.length - 1; i > 0; i--) {
+            if (sisaDataEligible.length > 0) {
+                // Fisher-Yates Shuffle
+                for (let i = sisaDataEligible.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
-                    [sisaData[i], sisaData[j]] = [sisaData[j], sisaData[i]];
+                    [sisaDataEligible[i], sisaDataEligible[j]] = [sisaDataEligible[j], sisaDataEligible[i]];
                 }
-                random15 = sisaData.slice(0, 15);
+                // Ambil maksimal 15 setelah diacak
+                random15 = sisaDataEligible.slice(0, 15);
             }
+            
+            // 6. Gabungkan Sampel
             const finalSamples = [...top15, ...random15];
             
             // D. Tulis Data
@@ -182,22 +213,6 @@ async function processAuditWorkpaper() {
                 currentRowIdx++;
             });
 
-            // // E. Footer Total
-            // const totalRow = newSheet.getRow(currentRowIdx);
-            // const totalLabel = totalRow.getCell(4);
-            // totalLabel.value = "TOTAL SAMPEL";
-            // totalLabel.font = { bold: true };
-            // totalLabel.alignment = { horizontal: 'right' };
-            // totalLabel.border = { top: {style:'thin'}, bottom: {style:'double'} };
-
-            // const totalVal = totalRow.getCell(5);
-            // const startSum = START_DATA_ROW;
-            // const endSum = currentRowIdx - 1;
-            // totalVal.value = { formula: `SUM(E${startSum}:E${endSum})` };
-            // totalVal.font = { bold: true };
-            // totalVal.numFmt = '_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)';
-            // totalVal.border = { top: {style:'thin'}, bottom: {style:'double'} };
-
             // F. Footer Keterangan
             const footerDestRow = currentRowIdx + FOOTER_GAP + 1; 
             const footerRowCount = masterSheet.rowCount - FOOTER_START_ROW + 1;
@@ -219,7 +234,7 @@ async function processAuditWorkpaper() {
     }
 }
 
-// --- HELPER ---
+// --- HELPER UNTUK EXCELJS ---
 function copyRows(srcSheet, destSheet, srcStartRow, srcEndRow, destStartRow, sheetNameForReplace) {
     const rowOffset = destStartRow - srcStartRow;
     for (let r = srcStartRow; r <= srcEndRow; r++) {
@@ -246,6 +261,7 @@ function copyRows(srcSheet, destSheet, srcStartRow, srcEndRow, destStartRow, she
         });
     }
 }
+
 function parseRangeString(rangeStr) {
     try {
         const parts = rangeStr.split(':'); if (parts.length !== 2) return null;
@@ -260,6 +276,3 @@ function parseRangeString(rangeStr) {
         return { top: Math.min(start.row, end.row), left: Math.min(start.col, end.col), bottom: Math.max(start.row, end.row), right: Math.max(start.col, end.col) };
     } catch (e) { return null; }
 }
-
-// --- SCRIPT TAMBAHAN: DYNAMIC YEAR ---
-document.getElementById('year').textContent = new Date().getFullYear();
