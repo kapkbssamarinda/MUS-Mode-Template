@@ -129,9 +129,90 @@ async function processAuditWorkpaper() {
                 if (rowNum > 1) { 
                     let nominal = row.getCell(4).value;
                     if (typeof nominal !== 'number') nominal = parseFloat(nominal) || 0;
+                    
+                    // Extract tanggal - simpan value asli dari Excel
+                    let tglValue = row.getCell(1).value;
+                    let tglTimestamp = null;
+                    
+                    // Debug: Lihat format tanggal asli
+                    if (rowNum <= 10) {
+                        console.log(`[Sheet: ${inputSheet.name}] Row ${rowNum} - tglValue:`, tglValue, `| Type:`, typeof tglValue, `| Raw:`, JSON.stringify(tglValue));
+                    }
+                    
+                    // Helper function untuk parse berbagai format tanggal
+                    const parseToTimestamp = (val) => {
+                        if (!val) return 0;
+                        
+                        // Jika sudah Date object
+                        if (val instanceof Date) {
+                            const ts = val.getTime();
+                            if (rowNum <= 10) console.log(`  → Parsed as Date: ${ts}`);
+                            return ts;
+                        }
+                        
+                        // Jika number (Excel serial number atau timestamp)
+                        if (typeof val === 'number') {
+                            // Jika nilainya kecil, kemungkinan Excel serial (antara 0-50000)
+                            // Jika besar, kemungkinan timestamp
+                            let ts;
+                            if (val < 50000) {
+                                // Excel serial number (hari sejak 1900-01-01)
+                                ts = new Date(1900, 0, 1 + val).getTime();
+                                if (rowNum <= 10) console.log(`  → Parsed as Excel serial: ${ts}`);
+                            } else {
+                                // Timestamp
+                                ts = val;
+                                if (rowNum <= 10) console.log(`  → Parsed as timestamp: ${ts}`);
+                            }
+                            return ts;
+                        }
+                        
+                        // Jika string
+                        if (typeof val === 'string') {
+                            // Format: dd/mm/yyyy atau d/m/yyyy
+                            if (val.includes('/') && !val.includes('-')) {
+                                const parts = val.split('/');
+                                if (parts.length === 3) {
+                                    const day = parseInt(parts[0], 10);
+                                    const month = parseInt(parts[1], 10);
+                                    const year = parseInt(parts[2], 10);
+                                    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                                        const ts = new Date(year, month - 1, day).getTime();
+                                        if (rowNum <= 10) console.log(`  → Parsed as dd/mm/yyyy: ${ts}`);
+                                        return ts;
+                                    }
+                                }
+                            }
+                            
+                            // Format: yyyy-mm-dd atau ISO
+                            if (val.includes('-')) {
+                                const parsed = new Date(val);
+                                if (!isNaN(parsed.getTime())) {
+                                    const ts = parsed.getTime();
+                                    if (rowNum <= 10) console.log(`  → Parsed as ISO/yyyy-mm-dd: ${ts}`);
+                                    return ts;
+                                }
+                            }
+                            
+                            // Coba parse biasa
+                            const parsed = new Date(val);
+                            if (!isNaN(parsed.getTime())) {
+                                const ts = parsed.getTime();
+                                if (rowNum <= 10) console.log(`  → Parsed as generic string: ${ts}`);
+                                return ts;
+                            }
+                        }
+                        
+                        if (rowNum <= 10) console.log(`  → FAILED to parse`);
+                        return 0;
+                    };
+                    
+                    tglTimestamp = parseToTimestamp(tglValue);
+                    
                     dataRaw.push({
                         idBaris: rowNum,
-                        tgl: row.getCell(1).value || '',
+                        tgl: tglValue,
+                        tglTimestamp: tglTimestamp, // Untuk sorting
                         voucher: row.getCell(2).value || '',
                         ket: row.getCell(3).value || '',
                         nominal: nominal
@@ -166,6 +247,19 @@ async function processAuditWorkpaper() {
             // 6. FINAL: Gabungkan Top 15 + Random 15
             const finalSamples = [...top15, ...random15];
             
+            // 7. SORT TANGGAL PAKSA: Urutkan dari tanggal awal ke akhir (Januari - Desember)
+            // Menggunakan tglTimestamp untuk sort yang konsisten dan akurat
+            finalSamples.sort((a, b) => {
+                return a.tglTimestamp - b.tglTimestamp;
+            });
+            
+            // Debug: Lihat hasil sorting
+            console.log(`\n[Sheet: ${inputSheet.name}] SETELAH SORTING:`);
+            finalSamples.slice(0, 10).forEach((item, idx) => {
+                console.log(`  ${idx + 1}. ${item.tgl} (timestamp: ${item.tglTimestamp})`);
+            });
+            console.log('...\n');
+            
             // D. Tulis Data
             let currentRowIdx = START_DATA_ROW; 
             const templateDataRow = masterSheet.getRow(START_DATA_ROW);
@@ -175,7 +269,32 @@ async function processAuditWorkpaper() {
                 if(templateDataRow.height) row.height = templateDataRow.height;
 
                 row.getCell(1).value = index + 1;
-                row.getCell(2).value = item.tgl;
+                
+                // Format Tanggal ke dd/mm/yyyy
+                let tglFormatted = '';
+                if (item.tgl) {
+                    // Jika sudah string format dd/mm/yyyy, gunakan langsung
+                    if (typeof item.tgl === 'string') {
+                        tglFormatted = item.tgl;
+                    } 
+                    // Jika Date object, format ke dd/mm/yyyy
+                    else if (item.tgl instanceof Date) {
+                        const day = item.tgl.getDate().toString().padStart(2, '0');
+                        const month = (item.tgl.getMonth() + 1).toString().padStart(2, '0');
+                        const year = item.tgl.getFullYear();
+                        tglFormatted = `${day}/${month}/${year}`;
+                    }
+                    // Jika number, konversi dari timestamp
+                    else if (typeof item.tgl === 'number' && item.tglTimestamp > 0) {
+                        const dateObj = new Date(item.tglTimestamp);
+                        const day = dateObj.getDate().toString().padStart(2, '0');
+                        const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+                        const year = dateObj.getFullYear();
+                        tglFormatted = `${day}/${month}/${year}`;
+                    }
+                }
+                
+                row.getCell(2).value = tglFormatted;
                 row.getCell(3).value = item.voucher;
                 row.getCell(4).value = item.ket;
                 row.getCell(5).value = item.nominal;
