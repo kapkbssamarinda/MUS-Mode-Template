@@ -123,14 +123,14 @@ async function processAuditWorkpaper() {
             });
 
 
-            // C. Sampling Logic (DENGAN MATERIALITAS)
+            // C. Sampling Logic (REVISED: Sort DESC → Filter Materialitas → Top 15 → Random 15)
             let dataRaw = [];
             inputSheet.eachRow((row, rowNum) => {
                 if (rowNum > 1) { 
                     let nominal = row.getCell(4).value;
                     if (typeof nominal !== 'number') nominal = parseFloat(nominal) || 0;
                     dataRaw.push({
-                        idBaris: rowNum, // Menyimpan ID baris untuk validasi unik (opsional tapi aman)
+                        idBaris: rowNum,
                         tgl: row.getCell(1).value || '',
                         voucher: row.getCell(2).value || '',
                         ket: row.getCell(3).value || '',
@@ -139,33 +139,31 @@ async function processAuditWorkpaper() {
                 }
             });
 
-            // 1. Sortir nilai terbesar ke terkecil berdasarkan absolut (opsional, tapi disarankan nilai absolut jika ada minus)
-            // Namun saya ikuti logika asli Anda (b-a)
+            // 1. SORT: Terbesar ke Terkecil
             dataRaw.sort((a, b) => b.nominal - a.nominal);
             
-            // 2. Ambil Top 15
-            const top15 = dataRaw.slice(0, 15);
+            // 2. FILTER: Hanya ambil yang nominal >= materialitas
+            let dataFiltered = dataRaw.filter(item => Math.abs(item.nominal) >= batasMaterialitas);
             
-            // 3. Pisahkan sisa data
-            let sisaData = dataRaw.slice(15);
+            // 3. TOP 15: Ambil 15 teratas dari data yang sudah difilter
+            const top15 = dataFiltered.slice(0, 15);
             
-            // 4. FILTER MATERIALITAS PADA SISA DATA
-            // Hanya ambil transaksi yang nilai absolutnya >= batas materialitas
-            let sisaDataEligible = sisaData.filter(item => Math.abs(item.nominal) >= batasMaterialitas);
+            // 4. SISA DATA: Ambil yang tidak termasuk top 15
+            let sisaDataFiltered = dataFiltered.slice(15);
             
-            // 5. Random Sisa Data yang Eligible
+            // 5. RANDOM 15: Acak dan ambil maksimal 15 dari sisa data
             let random15 = [];
-            if (sisaDataEligible.length > 0) {
-                // Fisher-Yates Shuffle
-                for (let i = sisaDataEligible.length - 1; i > 0; i--) {
+            if (sisaDataFiltered.length > 0) {
+                // Fisher-Yates Shuffle untuk randomisasi yang fair
+                for (let i = sisaDataFiltered.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
-                    [sisaDataEligible[i], sisaDataEligible[j]] = [sisaDataEligible[j], sisaDataEligible[i]];
+                    [sisaDataFiltered[i], sisaDataFiltered[j]] = [sisaDataFiltered[j], sisaDataFiltered[i]];
                 }
                 // Ambil maksimal 15 setelah diacak
-                random15 = sisaDataEligible.slice(0, 15);
+                random15 = sisaDataFiltered.slice(0, 15);
             }
             
-            // 6. Gabungkan Sampel
+            // 6. FINAL: Gabungkan Top 15 + Random 15
             const finalSamples = [...top15, ...random15];
             
             // D. Tulis Data
