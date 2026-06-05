@@ -210,9 +210,14 @@
                             <p class="text-muted small mb-0" id="fileName">Klik atau Drag file Excel ke sini</p>
                         </div>
 
-                        <button class="btn btn-primary btn-lg w-100 rounded-3 py-3 fw-bold shadow-sm transition-btn mb-4" onclick="processAuditWorkpaper()">
-                            <i class="fa-solid fa-gears me-2"></i> Proses & Download Kertas Kerja
-                        </button>
+                        <div class="d-flex gap-2 mb-4 w-100">
+                            <button class="btn btn-primary btn-lg flex-fill rounded-3 py-3 fw-bold shadow-sm transition-btn" onclick="processAuditWorkpaper('excel')">
+                                <i class="fa-solid fa-file-excel me-2"></i> Export Excel
+                            </button>
+                            <button class="btn btn-danger btn-lg flex-fill rounded-3 py-3 fw-bold shadow-sm transition-btn" onclick="processAuditWorkpaper('pdf')">
+                                <i class="fa-solid fa-file-pdf me-2"></i> Export PDF
+                            </button>
+                        </div>
 
                         <div class="w-100 p-3 bg-light bg-opacity-75 border border-secondary-subtle rounded-3">
                             <div class="d-flex">
@@ -264,6 +269,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     
     <script src="script.js"></script>
     
