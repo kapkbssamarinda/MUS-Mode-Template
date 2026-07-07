@@ -111,7 +111,46 @@ function formatRupiahGL(num) {
 }
 
 // --- LOGIKA SAMPLING (SHARED) ---
-function getSampledItems(inputSheet, batasMaterialitas, sortingOption) {
+function determineSampleCounts() {
+    const topInput = document.getElementById('topSamples').value;
+    const randomInput = document.getElementById('randomSamples').value;
+
+    let topCount = 15;
+    let randomCount = 15;
+
+    if (topInput !== "" && randomInput === "") {
+        topCount = parseInt(topInput, 10);
+        randomCount = 0;
+    } else if (topInput === "" && randomInput !== "") {
+        topCount = 0;
+        randomCount = parseInt(randomInput, 10);
+    } else if (topInput !== "" && randomInput !== "") {
+        topCount = parseInt(topInput, 10);
+        randomCount = parseInt(randomInput, 10);
+    }
+    
+    if (topCount < 0) topCount = 0;
+    if (randomCount < 0) randomCount = 0;
+
+    return { topCount, randomCount };
+}
+
+function extractTopSamples(data, count) {
+    if (count <= 0) return [];
+    return data.slice(0, count);
+}
+
+function extractRandomSamples(data, count) {
+    if (count <= 0) return [];
+    let sisaData = [...data];
+    for (let i = sisaData.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [sisaData[i], sisaData[j]] = [sisaData[j], sisaData[i]];
+    }
+    return sisaData.slice(0, count);
+}
+
+function getSampledItems(inputSheet, batasMaterialitas, sortingOption, sampleCounts) {
     let dataRaw = [];
     inputSheet.eachRow((row, rowNum) => {
         if (rowNum > 1) {
@@ -131,16 +170,12 @@ function getSampledItems(inputSheet, batasMaterialitas, sortingOption) {
 
     dataRaw.sort((a, b) => b.nominal - a.nominal);
     const dataFiltered = dataRaw.filter(item => Math.abs(item.nominal) >= batasMaterialitas);
-    const top15 = dataFiltered.slice(0, 15);
-    let sisaData = dataFiltered.slice(15);
+    
+    const topSamples = extractTopSamples(dataFiltered, sampleCounts.topCount);
+    const sisaData = dataFiltered.slice(sampleCounts.topCount);
+    const randomSamples = extractRandomSamples(sisaData, sampleCounts.randomCount);
 
-    for (let i = sisaData.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [sisaData[i], sisaData[j]] = [sisaData[j], sisaData[i]];
-    }
-    const random15 = sisaData.slice(0, 15);
-
-    const finalSamples = [...top15, ...random15];
+    const finalSamples = [...topSamples, ...randomSamples];
     if (sortingOption === 'date') {
         finalSamples.sort((a, b) => a.tglTimestamp - b.tglTimestamp);
     } else {
@@ -158,6 +193,7 @@ async function processAuditWorkpaper(mode = 'excel') {
     const preparedBy = document.getElementById('preparedBy').value || "";
     const batasMaterialitas = getNilaiMaterialitas();
     const sortingOption = getSortingOption();
+    const sampleCounts = determineSampleCounts();
 
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
@@ -179,7 +215,7 @@ async function processAuditWorkpaper(mode = 'excel') {
             // --- PDF EXPORT ---
             const allSheetsData = [];
             workbookInput.eachSheet((inputSheet) => {
-                const samples = getSampledItems(inputSheet, batasMaterialitas, sortingOption);
+                const samples = getSampledItems(inputSheet, batasMaterialitas, sortingOption, sampleCounts);
                 allSheetsData.push({ sheetName: inputSheet.name, samples });
             });
 
@@ -226,7 +262,7 @@ async function processAuditWorkpaper(mode = 'excel') {
                     newSheet.getCell(addr).font = { name: 'Arial', size: 10, bold: true };
                 });
 
-                const finalSamples = getSampledItems(inputSheet, batasMaterialitas, sortingOption);
+                const finalSamples = getSampledItems(inputSheet, batasMaterialitas, sortingOption, sampleCounts);
 
                 let currentRowIdx = START_DATA_ROW;
                 const templateDataRow = masterSheet.getRow(START_DATA_ROW);
