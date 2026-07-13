@@ -1,12 +1,15 @@
-const CACHE_NAME = 'mus-template-v1';
+const CACHE_NAME = 'mus-template-v2';
 const FILES_TO_CACHE = [
   './',
   './index.html',
-  './styles.css',
+  './style.css',
   './script.js',
-  './manifest.json'
+  './manifest.json',
+  './ico/icon-192.png',
+  './ico/icon-512.png'
   // MUS_Template.xlsx tidak perlu di-cache karena di-download user
 ];
+
 
 // Install Service Worker
 self.addEventListener('install', (event) => {

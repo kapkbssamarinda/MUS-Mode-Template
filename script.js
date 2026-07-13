@@ -115,28 +115,20 @@ function determineSampleCounts() {
     const topInput = document.getElementById('topSamples').value;
     const randomInput = document.getElementById('randomSamples').value;
 
-    let topCount = 15;
-    let randomCount = 15;
+    // Setiap field bersifat independen: jika dikosongkan, gunakan default 15
+    // sesuai dengan placeholder "Default: 15" yang ditampilkan di UI.
+    let topCount = topInput === "" ? 15 : parseInt(topInput, 10);
+    let randomCount = randomInput === "" ? 15 : parseInt(randomInput, 10);
 
-    if (topInput !== "" && randomInput === "") {
-        topCount = parseInt(topInput, 10);
-        randomCount = 0;
-    } else if (topInput === "" && randomInput !== "") {
-        topCount = 0;
-        randomCount = parseInt(randomInput, 10);
-    } else if (topInput !== "" && randomInput !== "") {
-        topCount = parseInt(topInput, 10);
-        randomCount = parseInt(randomInput, 10);
-    }
-    
-    if (topCount < 0) topCount = 0;
-    if (randomCount < 0) randomCount = 0;
+    if (isNaN(topCount) || topCount < 0) topCount = 0;
+    if (isNaN(randomCount) || randomCount < 0) randomCount = 0;
 
     return { topCount, randomCount };
 }
 
 function extractTopSamples(data, count) {
     if (count <= 0) return [];
+
     return data.slice(0, count);
 }
 
@@ -168,11 +160,15 @@ function getSampledItems(inputSheet, batasMaterialitas, sortingOption, sampleCou
         }
     });
 
-    dataRaw.sort((a, b) => b.nominal - a.nominal);
+    // Urutkan berdasarkan NILAI ABSOLUT (bukan nilai bertanda/signed) agar transaksi
+    // kredit/retur besar (nominal negatif) tetap dapat masuk sebagai "Sampel Teratas",
+    // konsisten dengan logika filter materialitas di bawah yang juga memakai Math.abs().
+    dataRaw.sort((a, b) => Math.abs(b.nominal) - Math.abs(a.nominal));
     const dataFiltered = dataRaw.filter(item => Math.abs(item.nominal) >= batasMaterialitas);
-    
+
     const topSamples = extractTopSamples(dataFiltered, sampleCounts.topCount);
     const sisaData = dataFiltered.slice(sampleCounts.topCount);
+
     const randomSamples = extractRandomSamples(sisaData, sampleCounts.randomCount);
 
     const finalSamples = [...topSamples, ...randomSamples];
