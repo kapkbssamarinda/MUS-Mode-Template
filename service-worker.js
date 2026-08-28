@@ -1,93 +1,118 @@
-const CACHE_NAME = 'mus-template-v2';
-const FILES_TO_CACHE = [
+// service-worker.js — AuditWorkpaper Pro Offline Engine
+const CACHE_NAME = 'mus-template-v5';
+
+const PRECACHE_ASSETS = [
   './',
   './index.html',
   './style.css',
   './script.js',
   './manifest.json',
+  './DESIGN.md',
   './ico/icon-192.png',
-  './ico/icon-512.png'
-  // MUS_Template.xlsx tidak perlu di-cache karena di-download user
+  './ico/icon-512.png',
+  './assets/Template_Input.xlsx',
+  './assets/Template_Output.xlsx'
 ];
 
+// External CDN Assets to cache for 100% offline capability
+const CDN_HOSTS = [
+  'cdn.jsdelivr.net',
+  'cdnjs.cloudflare.com',
+  'fonts.googleapis.com',
+  'fonts.gstatic.com'
+];
 
-// Install Service Worker
+// Install Service Worker: Pre-cache App Shell & Assets
 self.addEventListener('install', (event) => {
-  console.log('[Service Worker] Install');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('[Service Worker] Caching app shell');
-        return cache.addAll(FILES_TO_CACHE);
+        console.log('[Service Worker] Pre-caching local app shell...');
+        return cache.addAll(PRECACHE_ASSETS);
       })
       .then(() => self.skipWaiting())
   );
 });
 
-// Activate Service Worker
+// Activate Service Worker: Clean Up Old Caches
 self.addEventListener('activate', (event) => {
-  console.log('[Service Worker] Activate');
   event.waitUntil(
     caches.keys().then((keyList) => {
-      return Promise.all(keyList.map((key) => {
-        if (key !== CACHE_NAME) {
-          console.log('[Service Worker] Removing old cache', key);
-          return caches.delete(key);
-        }
-      }));
+      return Promise.all(
+        keyList.map((key) => {
+          if (key !== CACHE_NAME) {
+            console.log('[Service Worker] Removing deprecated cache:', key);
+            return caches.delete(key);
+          }
+        })
+      );
     }).then(() => self.clients.claim())
   );
 });
 
-// Fetch Strategy: Cache First, then Network
+// Fetch Strategy:
+// 1. Navigation requests: Network First, falling back to cache if offline.
+// 2. Static & CDN assets: Cache First with dynamic cache update.
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests
-  if (!event.request.url.startsWith(self.location.origin)) return;
-  
-  // Skip .xlsx file downloads
-  if (event.request.url.includes('.xlsx')) return;
-  
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response; // Return cached version
-        }
-        
-        // Clone the request
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then((response) => {
-          // Check if valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-          
-          // Clone the response
-          const responseToCache = response.clone();
-          
-          caches.open(CACHE_NAME)
-            .then((cache) => {
+  const url = new URL(event.request.url);
+
+  // Network First for Navigation (HTML Page)
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, responseToCache);
             });
-          
-          return response;
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // Check if request is local or from supported CDNs
+  const isLocal = url.origin === self.location.origin;
+  const isCdn = CDN_HOSTS.some(host => url.hostname.includes(host));
+
+  if (!isLocal && !isCdn) {
+    return; // Pass through unknown third-party requests
+  }
+
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      // Fetch from network and dynamically store in cache
+      return fetch(event.request)
+        .then((networkResponse) => {
+          if (!networkResponse || (networkResponse.status !== 200 && networkResponse.type !== 'opaque')) {
+            return networkResponse;
+          }
+
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+
+          return networkResponse;
+        })
+        .catch(() => {
+          return new Response('Offline Asset Unavailable', {
+            status: 503,
+            statusText: 'Service Unavailable'
+          });
         });
-      })
-      .catch(() => {
-        // Offline fallback
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
-        return new Response('Offline', { 
-          status: 503, 
-          statusText: 'Service Unavailable' 
-        });
-      })
+    })
   );
 });
 
-// Listen for messages (for cache updates)
+// Listen for skip waiting messages
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();

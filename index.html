@@ -1,282 +1,531 @@
-<!--index.html-->
+<!-- index.html -->
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
-    <meta name="application-name" content="MUS Template">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="application-name" content="AuditWorkpaper Pro">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="MUS Template">
-    <meta name="description" content="Aplikasi untuk membuat template MUS Audit">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="AuditWorkpaper Pro">
+    <meta name="description" content="Aplikasi otomatisasi penarikan sampel audit Monetary Unit Sampling (MUS) dan pembuatan kertas kerja.">
     <meta name="format-detection" content="telephone=no">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="msapplication-config" content="none">
-    <meta name="msapplication-TileColor" content="#000000">
-    <meta name="theme-color" content="#000000">
+    <meta name="msapplication-TileColor" content="#1d4ed8">
+    <meta name="theme-color" content="#f8fafc" id="metaThemeColor">
 
     <link rel="icon" type="image/png" sizes="192x192" href="ico/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="ico/icon-512.png">
     <link rel="apple-touch-icon" href="ico/icon-192.png">
-
-
     <link rel="manifest" href="manifest.json">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Audit Sampling (MUS)</title>
+    <title>AuditWorkpaper Pro — Monetary Unit Sampling (MUS)</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=Public+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top border-bottom">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="#">
-                <i class="fa-solid fa-file-invoice-dollar me-2"></i>AuditWorkpaper <span class="badge bg-primary-subtle text-primary rounded-pill fs-6 ms-1">Pro</span>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg app-navbar sticky-top">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand d-flex align-items-center fw-bold text-decoration-none" href="#">
+                <i class="fa-solid fa-file-invoice-dollar me-2 text-primary fs-4" aria-hidden="true"></i>
+                <span class="text-primary">AuditWorkpaper</span>
+                <span class="brand-badge ms-2">MUS Pro</span>
             </a>
-            <span class="navbar-text text-muted small d-none d-md-block">
-                Monetary Unit Sampling Automation
-            </span>
+
+            <div class="d-flex align-items-center gap-3">
+                <span class="navbar-text small text-muted d-none d-md-inline">
+                    Monetary Unit Sampling Automation
+                </span>
+                <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Ganti mode gelap atau terang" title="Ganti Tema">
+                    <i class="fa-solid fa-moon" id="themeIcon" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
     </nav>
 
-    <div class="container py-4">
+    <!-- Main Container -->
+    <main class="container py-4">
         
-        <div class="card shadow-sm border-0 rounded-4 mb-4">
-            <div class="card-body p-4">
-                <h5 class="fw-bold mb-4 text-dark"><i class="fa-solid fa-list-check me-2 text-primary"></i>Langkah Kerja</h5>
+        <!-- Workflow Guide Card -->
+        <section class="app-card mb-4" aria-labelledby="headingWorkflow">
+            <div class="app-card-body p-4">
+                <h2 class="fs-5 fw-bold mb-4 d-flex align-items-center" id="headingWorkflow">
+                    <i class="fa-solid fa-list-check me-2 text-primary" aria-hidden="true"></i>
+                    Langkah Kerja
+                </h2>
                 
                 <div class="row g-4">
+                    <!-- Step 1 -->
                     <div class="col-md-4 position-relative">
                         <div class="d-flex align-items-start">
-                            <div class="step-number me-3">1</div>
-                            <div>
-                                <h6 class="fw-bold">Persiapan Data</h6>
-                                <p class="text-muted small mb-2">Unduh template input, lalu isi data populasi transaksi.</p>
+                            <div class="step-number me-3" aria-hidden="true">1</div>
+                            <div class="flex-grow-1">
+                                <h3 class="fs-6 fw-bold mb-1">Persiapan Data Populasi</h3>
+                                <p class="text-muted small mb-2">Unduh template input Excel, lalu isi data populasi buku besar.</p>
                                 
-                                <div class="alert alert-primary py-2 px-3 small border-0 mb-3 rounded-3">
-                                    <div class="d-flex">
-                                        <i class="fa-solid fa-layer-group me-2 mt-1"></i>
+                                <div class="app-alert py-2 px-3 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fa-solid fa-layer-group me-2 mt-1 text-primary" aria-hidden="true"></i>
                                         <div>
-                                            <strong>Support Banyak Akun!</strong><br>
-                                            Anda bisa memproses banyak akun sekaligus. Pastikan <b>1 Sheet mewakili 1 Akun</b> dalam file Excel yang sama.
+                                            <strong>Mendukung Multi-Akun</strong><br>
+                                            Proses banyak akun sekaligus. Pastikan <b>1 Sheet mewakili 1 Akun</b> dalam satu file Excel.
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="d-grid">
-                                    <a href="assets/Template_Input.xlsx" class="btn btn-sm btn-outline-primary" download>
-                                        <i class="fa-solid fa-download me-1"></i> Unduh Template Input
+                                    <a href="assets/Template_Input.xlsx" class="btn btn-sm btn-outline-primary fw-semibold" download>
+                                        <i class="fa-solid fa-download me-1" aria-hidden="true"></i> Unduh Template Input
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4 position-relative border-start-md">
+                    <!-- Step 2 -->
+                    <div class="col-md-4 position-relative step-card-divider">
                         <div class="d-flex align-items-start">
-                            <div class="step-number me-3">2</div>
-                            <div>
-                                <h6 class="fw-bold">Lengkapi Informasi</h6>
-                                <p class="text-muted small mb-2">Isi form <b>Informasi Penugasan</b> di panel kiri bawah. Data ini akan otomatis dimasukkan ke header Kertas Kerja Audit.</p>
+                            <div class="step-number me-3" aria-hidden="true">2</div>
+                            <div class="flex-grow-1">
+                                <h3 class="fs-6 fw-bold mb-1">Lengkapi Parameter Penugasan</h3>
+                                <p class="text-muted small mb-3">Isi form <b>Informasi Penugasan</b>. Data ini otomatis dimasukkan ke dalam header Kertas Kerja.</p>
                                 
-                                <a href="https://drive.google.com/file/d/13JFPjfs1Jk0uIsARNhmpargRhHvPORfo/view?usp=sharing" target="_blank" class="text-decoration-none d-inline-flex align-items-center p-1 px-2 rounded-2 bg-light border hover-shadow transition-btn">
-                                    <i class="fa-solid fa-circle-play text-danger me-2 fa-lg"></i>
-                                    <span class="small fw-bold text-dark">Tonton Video Tutorial</span>
+                                <a href="https://drive.google.com/file/d/13JFPjfs1Jk0uIsARNhmpargRhHvPORfo/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="tutorial-link-btn">
+                                    <i class="fa-solid fa-circle-play text-danger me-2 fa-lg" aria-hidden="true"></i>
+                                    <span>Tonton Video Panduan</span>
+                                    <span class="visually-hidden">(buka di tab baru)</span>
                                 </a>
-
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4 position-relative border-start-md">
+                    <!-- Step 3 -->
+                    <div class="col-md-4 position-relative step-card-divider">
                         <div class="d-flex align-items-start">
-                            <div class="step-number me-3">3</div>
-                            <div>
-                                <h6 class="fw-bold">Proses & Unduh</h6>
-                                <p class="text-muted small mb-0">Upload file input yang sudah diisi ke panel <b>Upload</b> (Kanan), lalu klik proses. Sistem akan menghasilkan file output berisi sampling dan kertas kerja lengkap.</p>
+                            <div class="step-number me-3" aria-hidden="true">3</div>
+                            <div class="flex-grow-1">
+                                <h3 class="fs-6 fw-bold mb-1">Eksekusi & Unduh Hasil</h3>
+                                <p class="text-muted small mb-0">Unggah file Excel yang sudah terisi ke panel kanan, lalu pilih format ekspor. Kertas kerja sampling MUS langsung dihasilkan di browser tanpa kirim ke server.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="row g-4 justify-content-center">
-            
-            <div class="col-lg-5">
-                <div class="card shadow-sm border-0 h-100 rounded-4 bg-white">
-                    <div class="card-header bg-transparent border-bottom-0 pt-4 px-4">
-                        <h5 class="mb-0 fw-bold text-dark"><i class="fa-solid fa-pen-to-square me-2 text-success"></i>Informasi Penugasan</h5>
-                    </div>
-                    <div class="card-body px-4 pt-2">
-                        <form id="auditForm">
+        <!-- Form & Execution Row -->
+        <form id="auditForm" novalidate>
+            <div class="row g-4 justify-content-center">
+                
+                <!-- Left Panel: Assignment Information -->
+                <div class="col-lg-5">
+                    <section class="app-card h-100" aria-labelledby="headingForm">
+                        <div class="app-card-header d-flex justify-content-between align-items-center">
+                            <h2 class="fs-5 fw-bold mb-0 d-flex align-items-center" id="headingForm">
+                                <i class="fa-solid fa-pen-to-square me-2 text-primary" aria-hidden="true"></i>
+                                Informasi Penugasan
+                            </h2>
+                            <button type="button" class="btn btn-sm btn-link text-decoration-none text-muted p-0" id="btnResetForm" title="Kosongkan Formulir">
+                                <i class="fa-solid fa-rotate-left me-1" aria-hidden="true"></i> Reset
+                            </button>
+                        </div>
+                        <div class="app-card-body">
+                            <!-- Client Name -->
                             <div class="mb-3">
-                                <label class="form-label small fw-bold text-secondary">Nama Klien / Entitas <span class="text-danger">*</span></label>
+                                <label for="clientName" class="form-label">
+                                    Nama Klien / Entitas <span class="text-danger" aria-hidden="true">*</span>
+                                </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light"><i class="fa-solid fa-building"></i></span>
-                                    <input type="text" id="clientName" class="form-control" placeholder="PT Contoh Sejahtera" required>
+                                    <span class="input-group-text"><i class="fa-solid fa-building" aria-hidden="true"></i></span>
+                                    <input type="text" id="clientName" class="form-control" placeholder="PT Contoh Sejahtera" required aria-required="true">
                                 </div>
                             </div>
                             
+                            <!-- Audit Period -->
                             <div class="mb-3">
-                                <label class="form-label small fw-bold text-secondary">Periode Audit <span class="text-danger">*</span></label>
+                                <label for="period" class="form-label">
+                                    Periode Audit <span class="text-danger" aria-hidden="true">*</span>
+                                </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light"><i class="fa-solid fa-calendar-days"></i></span>
-                                    <input type="text" id="period" class="form-control" value="31 Desember 2024" required>
+                                    <span class="input-group-text"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></span>
+                                    <input type="text" id="period" class="form-control" value="31 Desember 2024" required aria-required="true">
                                 </div>
                             </div>
 
+                            <!-- Materiality Threshold -->
                             <div class="mb-3">
-                                <label class="form-label small fw-bold text-secondary">Batas Nilai Materialitas <span class="text-danger">*</span></label>
+                                <label for="materialitas" class="form-label">
+                                    Batas Nilai Materialitas <span class="text-danger" aria-hidden="true">*</span>
+                                </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light">Rp</span>
-                                    <input type="text" id="materialitas" class="form-control fw-bold text-primary" value="20.000" onkeyup="formatRibuan(this)" required>
+                                    <span class="input-group-text fw-bold">Rp</span>
+                                    <input type="text" id="materialitas" class="form-control input-highlight" value="20.000" inputmode="numeric" required aria-required="true" aria-describedby="materialitasHelp">
                                 </div>
-                                <div class="form-text mt-1" style="font-size: 0.75rem; color: #6c757d;">
-                                    <i class="fa-solid fa-circle-info me-1"></i>Nilai di bawah ini tidak akan ikut ditarik pada sampel random.
+                                <div class="small-helper mt-1" id="materialitasHelp">
+                                    <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>Nilai di bawah batas ini tidak akan ditarik pada sampel acak.
                                 </div>
                             </div>
 
+                            <!-- Sample Counts Override -->
                             <div class="row g-2 mb-3">
                                 <div class="col-6">
-                                    <label class="form-label small fw-bold text-secondary">Jml Sampel Tertinggi</label>
-                                    <input type="number" id="topSamples" class="form-control form-control-sm" placeholder="Default: 15" min="0">
+                                    <label for="topSamples" class="form-label">Jml Sampel Teratas</label>
+                                    <input type="number" id="topSamples" class="form-control" placeholder="Default: 15" min="0" aria-label="Jumlah Sampel Teratas">
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label small fw-bold text-secondary">Jml Sampel Acak</label>
-                                    <input type="number" id="randomSamples" class="form-control form-control-sm" placeholder="Default: 15" min="0">
+                                    <label for="randomSamples" class="form-label">Jml Sampel Acak</label>
+                                    <input type="number" id="randomSamples" class="form-control" placeholder="Default: 15" min="0" aria-label="Jumlah Sampel Acak">
                                 </div>
                             </div>
 
-                            <hr class="border-secondary-subtle my-4">
+                            <hr class="my-4 border-secondary-subtle">
 
+                            <!-- Auditor Info -->
                             <div class="row g-2 mb-3">
                                 <div class="col-7">
-                                    <label class="form-label small fw-bold text-secondary">Dibuat Oleh <span class="text-danger">*</span></label>
-                                    <input type="text" id="preparedBy" class="form-control form-control-sm" placeholder="Nama Auditor" required>
+                                    <label for="preparedBy" class="form-label">
+                                        Dibuat Oleh <span class="text-danger" aria-hidden="true">*</span>
+                                    </label>
+                                    <input type="text" id="preparedBy" class="form-control" placeholder="Nama Auditor" required aria-required="true">
                                 </div>
                                 <div class="col-5">
-                                    <label class="form-label small fw-bold text-secondary">Tanggal <span class="text-danger">*</span></label>
-                                    <input type="date" id="preparedDate" class="form-control form-control-sm" required>
+                                    <label for="preparedDate" class="form-label">
+                                        Tanggal <span class="text-danger" aria-hidden="true">*</span>
+                                    </label>
+                                    <input type="date" id="preparedDate" class="form-control" required aria-required="true">
                                 </div>
                             </div>
 
+                            <!-- Reviewer Info -->
                             <div class="row g-2 mb-4">
                                 <div class="col-7">
-                                    <label class="form-label small fw-bold text-secondary">Direview Oleh <span class="text-danger">*</span></label>
-                                    <input type="text" id="reviewedBy" class="form-control form-control-sm" placeholder="Nama Manajer" required>
+                                    <label for="reviewedBy" class="form-label">
+                                        Direview Oleh <span class="text-danger" aria-hidden="true">*</span>
+                                    </label>
+                                    <input type="text" id="reviewedBy" class="form-control" placeholder="Nama Manajer" required aria-required="true">
                                 </div>
                                 <div class="col-5">
-                                    <label class="form-label small fw-bold text-secondary">Tanggal <span class="text-danger">*</span></label>
-                                    <input type="date" id="reviewedDate" class="form-control form-control-sm" required>
+                                    <label for="reviewedDate" class="form-label">
+                                        Tanggal <span class="text-danger" aria-hidden="true">*</span>
+                                    </label>
+                                    <input type="date" id="reviewedDate" class="form-control" required aria-required="true">
                                 </div>
                             </div>
 
-                            <hr class="border-secondary-subtle my-4">
+                            <hr class="my-4 border-secondary-subtle">
 
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold text-secondary">Opsi Pengurutan Data <span class="text-danger">*</span></label>
+                            <!-- Sorting Option -->
+                            <fieldset class="mb-2">
+                                <legend class="form-label mb-2">
+                                    Opsi Pengurutan Kertas Kerja <span class="text-danger" aria-hidden="true">*</span>
+                                </legend>
                                 <div class="d-grid gap-2">
-                                    <div class="form-check border rounded-3 p-3 bg-light">
-                                        <input class="form-check-input" type="radio" name="sortingOption" id="sortByDate" value="date" required>
-                                        <label class="form-check-label w-100 cursor-pointer mb-0" for="sortByDate">
-                                            <div class="fw-bold text-dark small"><i class="fa-solid fa-arrow-up-short-wide me-2 text-success"></i>Urut Per Tanggal</div>
-                                            <div class="text-muted small" style="font-size: 0.8rem;">Data diurutkan dari tanggal awal ke akhir (Januari - Desember)</div>
-                                        </label>
+                                    <label class="radio-card active" for="sortByDate" id="labelSortDate">
+                                        <div class="d-flex align-items-start">
+                                            <input class="form-check-input me-3" type="radio" name="sortingOption" id="sortByDate" value="date" checked required>
+                                            <div>
+                                                <div class="radio-card-title">
+                                                    <i class="fa-solid fa-arrow-up-short-wide me-1 text-success" aria-hidden="true"></i>
+                                                    Urut Berdasarkan Tanggal
+                                                </div>
+                                                <div class="radio-card-desc">Data diurutkan kronologis dari awal ke akhir periode (Januari &ndash; Desember).</div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    
+                                    <label class="radio-card" for="sortByNominal" id="labelSortNominal">
+                                        <div class="d-flex align-items-start">
+                                            <input class="form-check-input me-3" type="radio" name="sortingOption" id="sortByNominal" value="nominal" required>
+                                            <div>
+                                                <div class="radio-card-title">
+                                                    <i class="fa-solid fa-sort-amount-down me-1 text-warning" aria-hidden="true"></i>
+                                                    Urut Berdasarkan Nominal
+                                                </div>
+                                                <div class="radio-card-desc">Data diurutkan dari nilai transaksi tertinggi ke terendah.</div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Panel: Upload & Execution -->
+                <div class="col-lg-7">
+                    <section class="app-card h-100" aria-labelledby="headingExecution">
+                        <div class="app-card-body d-flex flex-column justify-content-center align-items-center p-4 p-md-5">
+                            
+                            <div class="text-center mb-3">
+                                <div class="exec-header-icon" aria-hidden="true">
+                                    <i class="fa-solid fa-calculator"></i>
+                                </div>
+                                <h2 class="fs-4 fw-bold mb-1" id="headingExecution">Eksekusi Sampling MUS</h2>
+                                <p class="text-muted small mb-0">Pastikan informasi di panel kiri telah dilengkapi sebelum memulai proses.</p>
+                            </div>
+
+                            <!-- Demo Mode Active Banner (Hidden by default) -->
+                            <div id="demoActiveBanner" class="demo-active-banner w-100 d-none">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa-solid fa-flask-vial text-primary me-2 fs-5" aria-hidden="true"></i>
+                                        <div>
+                                            <span class="fw-bold small text-primary d-block" id="demoBannerScenarioTitle">Mode Simulasi Aktif</span>
+                                            <span class="small text-secondary" id="demoBannerScenarioDesc">Data buku besar demo dimuat.</span>
+                                        </div>
                                     </div>
-                                    <div class="form-check border rounded-3 p-3 bg-light">
-                                        <input class="form-check-input" type="radio" name="sortingOption" id="sortByNominal" value="nominal" required>
-                                        <label class="form-check-label w-100 cursor-pointer mb-0" for="sortByNominal">
-                                            <div class="fw-bold text-dark small"><i class="fa-solid fa-sort-amount-down me-2 text-warning"></i>Urut Per Nominal</div>
-                                            <div class="text-muted small" style="font-size: 0.8rem;">Data diurutkan dari nominal terbesar ke terkecil</div>
-                                        </label>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" id="btnClearDemo" title="Keluar dari Mode Simulasi">
+                                        Batal
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Dropzone File Upload -->
+                            <div class="upload-dropzone mb-3" id="dropZone" role="button" tabindex="0" aria-label="Unggah file Excel populasi transaksi" aria-describedby="dropDesc">
+                                <input type="file" id="inputExcel" accept=".xlsx" class="d-none" aria-label="Pilih file Excel populasi transaksi">
+                                <div class="dropzone-icon" aria-hidden="true">
+                                    <i class="fa-solid fa-cloud-arrow-up fa-2x" id="dropIcon"></i>
+                                </div>
+                                <h3 class="fs-6 fw-bold mb-1" id="dropTitle">Unggah File Input (.xlsx)</h3>
+                                <p class="small text-muted mb-0" id="dropDesc">Klik atau seret file Excel populasi ke area ini</p>
+                            </div>
+
+                            <!-- Demo Data Trigger Button -->
+                            <div class="d-flex justify-content-center mb-4 w-100">
+                                <button type="button" class="btn btn-demo-launcher" id="btnOpenDemoModal">
+                                    <i class="fa-solid fa-database me-2" aria-hidden="true"></i> Muat Data Simulasi / Demo
+                                </button>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex flex-column flex-sm-row gap-3 mb-4 w-100">
+                                <button type="button" class="btn btn-export-excel btn-lg flex-fill py-3" id="btnExportExcel">
+                                    <i class="fa-solid fa-file-excel me-2" aria-hidden="true"></i> Export Excel (Kertas Kerja)
+                                </button>
+                                <button type="button" class="btn btn-export-pdf btn-lg flex-fill py-3" id="btnExportPdf">
+                                    <i class="fa-solid fa-file-pdf me-2" aria-hidden="true"></i> Export PDF (Ringkasan)
+                                </button>
+                            </div>
+
+                            <!-- Methodology Summary Box -->
+                            <div class="w-100 app-card p-3" style="background-color: var(--color-bg-subtle);">
+                                <div class="d-flex align-items-start">
+                                    <div class="me-3 mt-1">
+                                        <i class="fa-solid fa-circle-info text-primary fs-5" aria-hidden="true"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="fs-6 fw-bold mb-1">Metodologi Monetary Unit Sampling</h3>
+                                        <p class="small text-muted mb-2">
+                                            Sistem secara otomatis menyaring transaksi di atas batas materialitas, lalu menarik sampel sesuai konfigurasi:
+                                        </p>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <span class="method-badge">
+                                                <i class="fa-solid fa-arrow-up-wide-short text-success me-1" aria-hidden="true"></i>
+                                                Populasi Teratas (Default: 15)
+                                            </span>
+                                            <span class="method-badge">
+                                                <i class="fa-solid fa-shuffle text-warning me-1" aria-hidden="true"></i>
+                                                Sampel Acak MUS (Default: 15)
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+
+                        </div>
+                    </section>
                 </div>
             </div>
+        </form>
 
-            <div class="col-lg-7">
-                <div class="card shadow border-0 h-100 rounded-4">
-                    <div class="card-body d-flex flex-column justify-content-center align-items-center p-5">
-                        
-                        <div class="text-center mb-4">
-                            <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle mb-3" style="width: 60px; height: 60px;">
-                                <i class="fa-solid fa-bolt fa-xl"></i>
-                            </div>
-                            <h3 class="fw-bold text-dark">Eksekusi Sampling</h3>
-                            <p class="text-secondary small">Pastikan semua data di kiri sudah terisi sebelum memproses.</p>
-                        </div>
+    </main>
 
-                        <div class="upload-area w-100 mb-4" id="dropZone">
-                            <input type="file" id="inputExcel" accept=".xlsx" hidden>
-                            <div class="icon-container mb-3">
-                                <i class="fa-solid fa-cloud-arrow-up fa-3x text-secondary"></i>
-                            </div>
-                            <h5 class="fw-bold text-dark" id="dropTitle">Upload File Input (.xlsx)</h5>
-                            <p class="text-muted small mb-0" id="fileName">Klik atau Drag file Excel ke sini</p>
-                        </div>
-
-                        <div class="d-flex gap-2 mb-4 w-100">
-                            <button class="btn btn-primary btn-lg flex-fill rounded-3 py-3 fw-bold shadow-sm transition-btn" onclick="processAuditWorkpaper('excel')">
-                                <i class="fa-solid fa-file-excel me-2"></i> Export Excel
+    <!-- Modal Simulasi Data Audit (Demo Suite) -->
+    <div class="modal fade" id="demoModal" tabindex="-1" aria-labelledby="demoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h2 class="modal-title fs-5 fw-bold" id="demoModalLabel">
+                            <i class="fa-solid fa-vial-circle-check text-primary me-2" aria-hidden="true"></i>
+                            Simulasi Data Populasi Audit
+                        </h2>
+                        <p class="text-muted small mb-0">Pilih skenario industri nyata atau rancang populasi data kustom untuk menguji alur MUS.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body p-4">
+                    
+                    <!-- Modal Navigation Tabs -->
+                    <ul class="nav nav-tabs mb-4" id="demoTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="scenario-tab" data-bs-toggle="tab" data-bs-target="#scenario-tab-pane" type="button" role="tab" aria-controls="scenario-tab-pane" aria-selected="true">
+                                <i class="fa-solid fa-industry me-2" aria-hidden="true"></i> Skenario Industri
                             </button>
-                            <button class="btn btn-danger btn-lg flex-fill rounded-3 py-3 fw-bold shadow-sm transition-btn" onclick="processAuditWorkpaper('pdf')">
-                                <i class="fa-solid fa-file-pdf me-2"></i> Export PDF
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="custom-tab" data-bs-toggle="tab" data-bs-target="#custom-tab-pane" type="button" role="tab" aria-controls="custom-tab-pane" aria-selected="false">
+                                <i class="fa-solid fa-sliders me-2" aria-hidden="true"></i> Generator Kustom
                             </button>
-                        </div>
+                        </li>
+                    </ul>
 
-                        <div class="w-100 p-3 bg-light bg-opacity-75 border border-secondary-subtle rounded-3">
-                            <div class="d-flex">
-                                <div class="me-3">
-                                    <i class="fa-solid fa-circle-info text-primary fs-5 mt-1"></i>
+                    <div class="tab-content" id="demoTabContent">
+                        <!-- Tab 1: Industry Scenarios -->
+                        <div class="tab-pane fade show active" id="scenario-tab-pane" role="tabpanel" aria-labelledby="scenario-tab" tabindex="0">
+                            <div class="row g-3">
+                                <!-- Scenario 1: Manufacturing -->
+                                <div class="col-md-4">
+                                    <div class="scenario-card active" data-scenario="manufaktur" tabindex="0" role="button" aria-pressed="true">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="scenario-tag">Manufaktur</span>
+                                            <i class="fa-solid fa-check-circle text-primary scenario-check" aria-hidden="true"></i>
+                                        </div>
+                                        <h4 class="fs-6 fw-bold mb-1">PT Mega Perkasa Abadi Tbk</h4>
+                                        <p class="text-muted small mb-3">Industri manufaktur &amp; ekspor dengan transaksi pembelian material bernilai besar.</p>
+                                        <div class="small-helper border-top pt-2">
+                                            <div><strong>Akun (3):</strong> Kas Bank, Piutang, HPP</div>
+                                            <div><strong>Populasi:</strong> ~250 Transaksi</div>
+                                            <div><strong>Materialitas:</strong> Rp 50.000.000</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h6 class="fw-bold text-dark mb-1" style="font-size: 0.9rem;">Metode Sampling</h6>
-                                    <p class="text-secondary small mb-2" style="font-size: 0.85rem; line-height: 1.5;">
-                                        Sistem akan mengambil sampel sesuai yang Anda tentukan (Default 30):
-                                    </p>
-                                    <div class="d-flex gap-2">
-                                        <span class="badge bg-white text-dark border fw-normal">
-                                            <i class="fa-solid fa-arrow-up-wide-short text-success me-1"></i> Teratas (Def: 15)
-                                        </span>
-                                        <span class="badge bg-white text-dark border fw-normal">
-                                            <i class="fa-solid fa-shuffle text-warning me-1"></i> Acak (Def: 15)
-                                        </span>
+
+                                <!-- Scenario 2: Retail -->
+                                <div class="col-md-4">
+                                    <div class="scenario-card" data-scenario="ritel" tabindex="0" role="button" aria-pressed="false">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="scenario-tag">Ritel</span>
+                                            <i class="fa-regular fa-circle text-muted scenario-check" aria-hidden="true"></i>
+                                        </div>
+                                        <h4 class="fs-6 fw-bold mb-1">PT Nusantara Retail Mart</h4>
+                                        <p class="text-muted small mb-3">Jaringan supermarket dengan frekuensi transaksi harian volume tinggi.</p>
+                                        <div class="small-helper border-top pt-2">
+                                            <div><strong>Akun (2):</strong> Kas Induk, Persediaan</div>
+                                            <div><strong>Populasi:</strong> ~350 Transaksi</div>
+                                            <div><strong>Materialitas:</strong> Rp 15.000.000</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Scenario 3: IT Services -->
+                                <div class="col-md-4">
+                                    <div class="scenario-card" data-scenario="jasa_it" tabindex="0" role="button" aria-pressed="false">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="scenario-tag">Jasa IT</span>
+                                            <i class="fa-regular fa-circle text-muted scenario-check" aria-hidden="true"></i>
+                                        </div>
+                                        <h4 class="fs-6 fw-bold mb-1">PT Sinergi Solusi Digital</h4>
+                                        <p class="text-muted small mb-3">Penyedia solusi perangkat lunak dengan kontrak termin proyek.</p>
+                                        <div class="small-helper border-top pt-2">
+                                            <div><strong>Akun (2):</strong> Kas BCA, Piutang Proyek</div>
+                                            <div><strong>Populasi:</strong> ~160 Transaksi</div>
+                                            <div><strong>Materialitas:</strong> Rp 35.000.000</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Tab 2: Custom Generator -->
+                        <div class="tab-pane fade" id="custom-tab-pane" role="tabpanel" aria-labelledby="custom-tab" tabindex="0">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="customClientName" class="form-label">Nama Entitas Klien</label>
+                                    <input type="text" id="customClientName" class="form-control" value="PT Simulasi Audit Nusantara">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="customMateriality" class="form-label">Batas Materialitas (Rp)</label>
+                                    <input type="text" id="customMateriality" class="form-control input-highlight" value="25.000.000">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="customAccountCount" class="form-label">Jumlah Akun Buku Besar</label>
+                                    <select id="customAccountCount" class="form-select">
+                                        <option value="1">1 Akun (Kas &amp; Bank)</option>
+                                        <option value="2">2 Akun (Kas, Piutang)</option>
+                                        <option value="3" selected>3 Akun (Kas, Piutang, Persediaan)</option>
+                                        <option value="4">4 Akun (Kas, Piutang, Persediaan, HPP)</option>
+                                        <option value="5">5 Akun Lengkap</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="customRowCount" class="form-label">Volume Transaksi per Akun</label>
+                                    <select id="customRowCount" class="form-select">
+                                        <option value="50">50 Transaksi (Kecil)</option>
+                                        <option value="100" selected>100 Transaksi (Sedang)</option>
+                                        <option value="250">250 Transaksi (Besar)</option>
+                                        <option value="500">500 Transaksi (Volume Tinggi)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="customReturnPercent" class="form-label">Persentase Transaksi Retur</label>
+                                    <select id="customReturnPercent" class="form-select">
+                                        <option value="0">0% (Positif Saja)</option>
+                                        <option value="5">5% Transaksi Retur</option>
+                                        <option value="10" selected>10% Transaksi Retur</option>
+                                        <option value="20">20% Transaksi Retur</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary fw-semibold px-4" id="btnApplyDemo">
+                        <i class="fa-solid fa-bolt me-2" aria-hidden="true"></i> Terapkan Data Simulasi
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="bg-white border-top py-4 mt-auto">
+    <!-- Footer -->
+    <footer class="app-footer">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
-                    <p class="mb-0 small text-muted">
-                        &copy; <span id="year"></span> <strong>Project MUS</strong>. Created by <a href="#" class="text-decoration-none fw-bold text-primary">Viany Ramadhany</a>.
+                    <p class="mb-0">
+                        &copy; <span id="year"></span> <strong>AuditWorkpaper Pro</strong> &middot; Dikembangkan oleh <strong>Viany Ramadhany</strong> &middot; Dirancang untuk Auditor Independen &amp; KAP.
                     </p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <ul class="list-inline mb-0 small">
-                        <li class="list-inline-item"><a href="#" class="text-muted text-decoration-none">Audit Tools</a></li>
-                        <li class="list-inline-item mx-2 text-muted">&middot;</li>
-                        <li class="list-inline-item"><a href="#" class="text-muted text-decoration-none">v2.0 Stable</a></li>
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item"><span class="text-muted">Client-Side Secure Engine</span></li>
+                        <li class="list-inline-item mx-2 text-muted" aria-hidden="true">&middot;</li>
+                        <li class="list-inline-item"><span class="badge bg-secondary-subtle text-secondary">v2.1 Stable</span></li>
                     </ul>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- PWA Install Banner Component (Hidden by default) -->
+    <div id="pwaBanner" class="pwa-banner d-none" role="dialog" aria-labelledby="pwaBannerTitle">
+        <div class="pwa-banner-icon text-primary fs-3" aria-hidden="true">
+            <i class="fa-solid fa-laptop-file"></i>
+        </div>
+        <div class="flex-grow-1">
+            <div class="fw-bold small" id="pwaBannerTitle">Pasang Aplikasi Audit</div>
+            <div class="text-muted" style="font-size: 0.75rem;">Akses offline cepat tanpa koneksi internet.</div>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-primary fw-semibold" id="btnPwaInstall">Install</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPwaDismiss" aria-label="Tutup Banner">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
@@ -285,113 +534,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     
     <script src="script.js"></script>
-    
-    <script>
-        document.getElementById('preparedDate').valueAsDate = new Date();
-        document.getElementById('reviewedDate').valueAsDate = new Date();
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // FUNGSI AUTO-FORMAT MATERIALITAS
-        function formatRibuan(input) {
-            let angka = input.value.replace(/\D/g, '');
-            if (angka !== '') {
-                angka = parseInt(angka, 10).toString();
-                let sisa = angka.length % 3;
-                let rupiah = angka.substr(0, sisa);
-                let ribuan = angka.substr(sisa).match(/\d{3}/g);
-                
-                if (ribuan) {
-                    let separator = sisa ? '.' : '';
-                    rupiah += separator + ribuan.join('.');
-                }
-                input.value = rupiah;
-            } else {
-                input.value = '';
-            }
-        }
-    </script>
-
-    <script>
-        // Registrasi Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                .then((registration) => {
-                    console.log('✅ Service Worker registered:', registration.scope);
-                    
-                    // Check for updates
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        console.log('🔄 Service Worker update found!');
-                        
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('🆕 New content available!');
-                                if (confirm('Update tersedia! Muat ulang aplikasi?')) {
-                                    window.location.reload();
-                                }
-                            }
-                        });
-                    });
-                })
-                .catch((error) => {
-                    console.log('❌ Service Worker registration failed:', error);
-                });
-            });
-            
-            // Listen for controller change
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    refreshing = true;
-                    window.location.reload();
-                }
-            });
-        }
-
-        // Deteksi jika app diinstall sebagai PWA
-        window.addEventListener('DOMContentLoaded', () => {
-            // Cek display mode
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                                 window.navigator.standalone ||
-                                 document.referrer.includes('android-app://');
-            
-            if (isStandalone) {
-                console.log('📱 Running as PWA');
-                document.body.classList.add('pwa-mode');
-            }
-            
-            // Tombol install PWA
-            let deferredPrompt;
-            const installBtn = document.createElement('button');
-            installBtn.innerHTML = '📲 Install App';
-            installBtn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:1000;padding:10px;background:#000;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:14px;';
-            installBtn.addEventListener('click', () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('✅ User accepted install');
-                        }
-                        deferredPrompt = null;
-                    });
-                }
-            });
-            
-            // Sembunyikan jika sudah diinstall
-            if (!isStandalone) {
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    document.body.appendChild(installBtn);
-                });
-                
-                window.addEventListener('appinstalled', () => {
-                    console.log('🎉 PWA installed');
-                    document.body.removeChild(installBtn);
-                });
-            }
-        });
-    </script>
 </body>
 </html>

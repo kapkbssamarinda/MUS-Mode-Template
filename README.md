@@ -69,11 +69,22 @@ Agar kertas kerja dapat diandalkan, penting bagi auditor untuk mengetahui cara s
 ---
 
 ## 💻 Cara Menjalankan Secara Lokal (Local Setup)
-Karena aplikasi ini 100% Client-Side, Anda bisa menjalankannya tanpa konfigurasi server yang rumit:
-1. *Clone* atau unduh *repository* ini.
-2. Buka folder proyek.
-3. Anda dapat langsung membuka `index.html` di browser Anda (disarankan menggunakan Google Chrome, Edge, atau Firefox versi terbaru).
-4. *(Opsional)* Untuk pengalaman terbaik dan agar PWA (Service Worker) berjalan optimal, jalankan menggunakan ekstensi **Live Server** di VS Code atau server statis sederhana (contoh: `python -m http.server`).
+
+Aplikasi ini dapat dijalankan dengan sangat mudah menggunakan **Python**:
+
+### Menggunakan Python (Direkomendasikan)
+1. Buka terminal / command prompt di folder proyek.
+2. Jalankan perintah:
+   ```bash
+   python server.py
+   ```
+3. Peramban web Anda akan otomatis terbuka di `http://127.0.0.1:8000/`.
+
+> **Pengguna Windows**: Anda juga cukup melakukan **klik ganda (double-click)** pada file `start_server.bat`.
+
+### Opsi Parameter Tambahan
+* Menggunakan port tertentu: `python server.py --port 8080`
+* Menjalankan tanpa membuka browser otomatis: `python server.py --no-browser`
 
 ---
 

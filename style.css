@@ -1,139 +1,634 @@
-/* style.css */
+/* style.css — AuditWorkpaper Pro Design System */
+
+:root {
+    /* Brand / Primary */
+    --color-primary: #1d4ed8;
+    --color-primary-hover: #1e40af;
+    --color-primary-subtle: #eff6ff;
+    --color-primary-border: #bfdbfe;
+
+    /* Neutrals & Canvas */
+    --color-bg-canvas: #f8fafc;
+    --color-bg-surface: #ffffff;
+    --color-bg-subtle: #f1f5f9;
+    --color-bg-muted: #e2e8f0;
+
+    /* Text & Ink (WCAG AA Compliant) */
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #334155;
+    --color-text-muted: #475569;
+
+    /* Borders */
+    --color-border: #cbd5e1;
+    --color-border-subtle: #e2e8f0;
+    --color-border-focus: #2563eb;
+
+    /* Status & Domain Accents */
+    --color-excel: #15803d;
+    --color-excel-hover: #166534;
+    --color-excel-bg: #f0fdf4;
+    --color-pdf: #b91c1c;
+    --color-pdf-hover: #991b1b;
+    --color-pdf-bg: #fef2f2;
+    --color-warning: #b45309;
+    --color-warning-bg: #fffbeb;
+
+    /* Elevation Shadows */
+    --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
+    --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+
+    /* Radii */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+}
+
+[data-theme="dark"] {
+    --color-primary: #3b82f6;
+    --color-primary-hover: #60a5fa;
+    --color-primary-subtle: #1e293b;
+    --color-primary-border: #1e3a8a;
+
+    --color-bg-canvas: #090d16;
+    --color-bg-surface: #111827;
+    --color-bg-subtle: #1e293b;
+    --color-bg-muted: #334155;
+
+    --color-text-primary: #f8fafc;
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted: #94a3b8;
+
+    --color-border: #334155;
+    --color-border-subtle: #1e293b;
+    --color-border-focus: #60a5fa;
+
+    --color-excel: #22c55e;
+    --color-excel-hover: #4ade80;
+    --color-excel-bg: #052e16;
+    --color-pdf: #ef4444;
+    --color-pdf-hover: #f87171;
+    --color-pdf-bg: #450a0a;
+    --color-warning: #f59e0b;
+    --color-warning-bg: #451a03;
+
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+}
+
+/* Base Styling */
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f4f6f9;
-    color: #343a40;
-    
-    /* Tambahan agar Footer Sticky di Bawah */
+    font-family: 'Public Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--color-bg-canvas);
+    color: var(--color-text-primary);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    letter-spacing: -0.01em;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-footer {
-    margin-top: auto; /* Ini kunci agar footer terdorong ke bawah */
+/* Typography & Headings */
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'IBM Plex Sans', 'Public Sans', system-ui, sans-serif;
+    color: var(--color-text-primary);
+    text-wrap: balance;
+    font-weight: 700;
 }
 
-.navbar {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+.input-highlight, .input-group-text.fw-bold {
+    font-family: 'JetBrains Mono', monospace;
 }
 
-.card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.text-muted {
+    color: var(--color-text-muted) !important;
 }
 
-/* Style untuk Nomor Langkah (Step Number) */
+.text-secondary {
+    color: var(--color-text-secondary) !important;
+}
+
+.small-helper {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+}
+
+/* Navbar */
+.app-navbar {
+    background-color: var(--color-bg-surface);
+    border-bottom: 1px solid var(--color-border-subtle);
+    box-shadow: var(--shadow-xs);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.brand-badge {
+    font-size: 0.75rem;
+    background-color: var(--color-primary-subtle);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary-border);
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+}
+
+.theme-toggle-btn {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-sm);
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+    background-color: var(--color-bg-subtle);
+    color: var(--color-primary);
+    border-color: var(--color-primary-border);
+}
+
+.theme-toggle-btn:focus-visible {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 2px;
+}
+
+/* Cards */
+.app-card {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app-card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 1.25rem 1.5rem;
+}
+
+.app-card-body {
+    padding: 1.5rem;
+}
+
+/* Step Number Badge */
 .step-number {
     width: 32px;
     height: 32px;
-    background-color: #e0e7ff;
-    color: #4f46e5;
-    border-radius: 50%;
+    background-color: var(--color-primary-subtle);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     flex-shrink: 0;
 }
 
-/* Garis pemisah antar kolom instruksi pada layar desktop */
-@media (min-width: 768px) {
-    .border-start-md {
-        border-left: 1px solid #e9ecef;
+.step-card-divider {
+    border-left: 1px solid var(--color-border-subtle);
+}
+
+@media (max-width: 767.98px) {
+    .step-card-divider {
+        border-left: none;
+        border-top: 1px solid var(--color-border-subtle);
+        padding-top: 1.25rem;
+        margin-top: 0.5rem;
     }
 }
 
-/* Upload Area Styling */
-.upload-area {
-    border: 2px dashed #dee2e6;
-    border-radius: 12px;
-    padding: 30px 20px;
-    text-align: center;
-    background-color: #f8f9fa;
-    cursor: pointer;
-    transition: all 0.3s ease;
+/* Custom Alert / Info Box */
+.app-alert {
+    background-color: var(--color-primary-subtle);
+    border: 1px solid var(--color-primary-border);
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
 }
 
-.upload-area:hover, .upload-area.active {
-    border-color: #0d6efd;
-    background-color: #eff6ff;
+.app-alert-warning {
+    background-color: var(--color-warning-bg);
+    border: 1px solid var(--color-warning);
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
 }
 
-.upload-area .icon-container i {
-    transition: color 0.3s ease;
-}
-
-.upload-area:hover .icon-container i {
-    color: #0d6efd !important; /* Icon jadi biru saat hover */
-}
-
-.transition-btn {
-    transition: transform 0.1s;
-}
-.transition-btn:active {
-    transform: scale(0.98);
-}
-
-/* Style untuk PWA */
-.pwa-mode header {
-  padding-top: env(safe-area-inset-top, 20px);
-}
-
-@media (display-mode: standalone) {
-  body {
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-  
-  /* Sembunyikan browser UI */
-  header {
-    padding-top: 40px;
-  }
-}
-
-/* ===== NEW: Styling untuk Radio Button Sorting Option ===== */
-.form-check {
-    cursor: pointer;
-    border-color: #dee2e6 !important;
+/* Tutorial Button */
+.tutorial-link-btn {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-size: 0.8125rem;
+    font-weight: 600;
     transition: all 0.2s ease;
 }
 
-.form-check:hover {
-    border-color: #0d6efd !important;
-    background-color: #f0f7ff !important;
-    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+.tutorial-link-btn:hover {
+    background-color: var(--color-bg-muted);
+    border-color: var(--color-border-focus);
+    color: var(--color-text-primary);
 }
 
-.form-check input[type="radio"] {
+.tutorial-link-btn:focus-visible {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 2px;
+}
+
+/* Form Controls & Labels */
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.35rem;
+}
+
+.form-control, .form-select {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    border-radius: var(--radius-sm);
+    min-height: 42px;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    outline: none;
+}
+
+.input-group-text {
+    background-color: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Interactive Radio Cards */
+.radio-card {
+    display: block;
     cursor: pointer;
-    width: 1.3em;
-    height: 1.3em;
+    border: 1.5px solid var(--color-border-subtle);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-surface);
+    padding: 0.85rem 1rem;
+    transition: all 0.2s ease;
+    margin-bottom: 0.5rem;
+}
+
+.radio-card:hover {
+    border-color: var(--color-primary-border);
+    background-color: var(--color-bg-subtle);
+}
+
+.radio-card:focus-within {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.radio-card input[type="radio"] {
+    width: 1.25em;
+    height: 1.25em;
     margin-top: 0.15em;
-}
-
-.form-check input[type="radio"]:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
-
-.form-check label {
     cursor: pointer;
+    accent-color: var(--color-primary);
 }
 
-.cursor-pointer {
+.radio-card.active {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-subtle);
+}
+
+.radio-card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.radio-card-desc {
+    font-size: 0.775rem;
+    color: var(--color-text-muted);
+}
+
+/* Dropzone Upload Area */
+.upload-dropzone {
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    background-color: var(--color-bg-subtle);
     cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    width: 100%;
 }
 
-/* Highlight option yang dipilih */
-.form-check input[type="radio"]:checked + label .fw-bold {
-    color: #0d6efd;
+.upload-dropzone:hover, .upload-dropzone.dragover {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-subtle);
 }
 
-.form-check input[type="radio"]:checked + label {
-    color: #0d6efd;
+.upload-dropzone:focus-visible {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
-.form-check input[type="radio"]:checked ~ .form-check {
-    opacity: 0.6;
+.upload-dropzone.ready {
+    border-color: var(--color-excel);
+    background-color: var(--color-excel-bg);
+}
+
+.dropzone-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-bg-surface);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    box-shadow: var(--shadow-xs);
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.upload-dropzone:hover .dropzone-icon {
+    color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.upload-dropzone.ready .dropzone-icon {
+    color: var(--color-excel);
+    background-color: var(--color-excel-bg);
+}
+
+/* Action Buttons */
+.btn-export-excel {
+    background-color: var(--color-excel);
+    border-color: var(--color-excel);
+    color: #ffffff;
+    font-weight: 600;
+    min-height: 48px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.15s ease;
+}
+
+.btn-export-excel:hover, .btn-export-excel:focus {
+    background-color: var(--color-excel-hover);
+    border-color: var(--color-excel-hover);
+    color: #ffffff;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-export-pdf {
+    background-color: var(--color-pdf);
+    border-color: var(--color-pdf);
+    color: #ffffff;
+    font-weight: 600;
+    min-height: 48px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.15s ease;
+}
+
+.btn-export-pdf:hover, .btn-export-pdf:focus {
+    background-color: var(--color-pdf-hover);
+    border-color: var(--color-pdf-hover);
+    color: #ffffff;
+    box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* Demo Mode Launcher Button */
+.btn-demo-launcher {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-primary-border);
+    color: var(--color-primary);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+}
+
+.btn-demo-launcher:hover {
+    background-color: var(--color-primary-subtle);
+    border-color: var(--color-primary);
+    color: var(--color-primary-hover);
+}
+
+.btn-demo-launcher:focus-visible {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 2px;
+}
+
+/* Demo Active Banner */
+.demo-active-banner {
+    background-color: var(--color-primary-subtle);
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Scenario Cards inside Modal */
+.scenario-card {
+    border: 1.5px solid var(--color-border-subtle);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-surface);
+    padding: 1.15rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 100%;
+}
+
+.scenario-card:hover {
+    border-color: var(--color-primary-border);
+    background-color: var(--color-bg-subtle);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.scenario-card.active {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-subtle);
+    box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.scenario-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-subtle);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+}
+
+/* Method Info Badge */
+.method-badge {
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.775rem;
+    font-weight: 500;
+}
+
+/* Execution Header Icon */
+.exec-header-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary-subtle);
+    border: 1px solid var(--color-primary-border);
+    color: var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Modal Dark Mode Overrides */
+.modal-content {
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--color-border-subtle);
+}
+
+.nav-tabs {
+    border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.nav-tabs .nav-link {
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.65rem 1rem;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--color-primary);
+    border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: transparent;
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-primary);
+}
+
+/* Footer */
+.app-footer {
+    background-color: var(--color-bg-surface);
+    border-top: 1px solid var(--color-border-subtle);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    padding: 1.25rem 0;
+    margin-top: auto;
+}
+
+.app-footer a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.app-footer a:hover {
+    text-decoration: underline;
+}
+
+/* PWA Install Banner */
+.pwa-banner {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1050;
+    max-width: 360px;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .pwa-banner {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        max-width: none;
+    }
+}
+
+/* Safe Area Inset for Standalone PWA */
+.pwa-mode body {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
